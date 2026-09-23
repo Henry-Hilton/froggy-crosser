@@ -1,0 +1,143 @@
+{
+  "atlas": "crossing/CP_V1.0.4.png",
+  "format": "[left, top, width, height]",
+  "regions": {
+    "car": [
+      128,
+      448,
+      48,
+      32
+    ],
+    "truck": [
+      16,
+      384,
+      64,
+      32
+    ],
+    "racer": [
+      128,
+      384,
+      48,
+      32
+    ],
+    "log": [
+      274,
+      402,
+      28,
+      26
+    ],
+    "gift": [
+      544,
+      184,
+      16,
+      24
+    ],
+    "grass": [
+      80,
+      816,
+      16,
+      16
+    ],
+    "water": [
+      48,
+      816,
+      16,
+      16
+    ],
+    "road": [
+      48,
+      608,
+      16,
+      16
+    ],
+    "roadStripe": [
+      80,
+      608,
+      16,
+      16
+    ],
+    "shoreTop": [
+      48,
+      768,
+      16,
+      16
+    ],
+    "shoreBottom": [
+      48,
+      896,
+      16,
+      16
+    ],
+    "sand": [
+      240,
+      784,
+      16,
+      16
+    ],
+    "sidewalk": [
+      240,
+      608,
+      16,
+      16
+    ],
+    "tree": [
+      384,
+      512,
+      16,
+      32
+    ],
+    "tree2": [
+      416,
+      512,
+      16,
+      32
+    ],
+    "shop": [
+      112,
+      176,
+      48,
+      48
+    ],
+    "building": [
+      112,
+      32,
+      48,
+      96
+    ],
+    "lamp": [
+      384,
+      416,
+      16,
+      32
+    ]
+  },
+  "frog": {
+    "sheet": "frogs/frog_green_spritesheet.png",
+    "cell": 32,
+    "regionWithinCell": [
+      4,
+      12,
+      24,
+      20
+    ],
+    "rows": {
+      "down": 0,
+      "left": 6,
+      "up": 4,
+      "right": 2
+    },
+    "idleColumns": [
+      0,
+      1,
+      2
+    ],
+    "hopColumns": [
+      11,
+      12,
+      13,
+      14,
+      15
+    ]
+  },
+  "processing": "Nearest-neighbor enlargement; horizontally flip vehicle crops to face right. Timber is the wooden cargo crop resized to 96x24."
+}
