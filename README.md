@@ -73,7 +73,3 @@ The UI uses the supplied Kenney Pixel UI Pack, cropped Noun Project icons by Mik
 Original sheets are retained in `assets/packs/`. Runtime PNG regions are in `assets/game/pixel/`, with source coordinates in `assets/packs/regions.json`. Regions are cropped and scaled using nearest-neighbor sampling; the hero scene composes only these pack assets. Rank numbers and interface text are native UI. Credits also live in `assets/game/CREDITS.md`.
 
 The optional fly bonus has become a gift pickup to use an actual supplied sprite. It still gives 25 points and uses the same timing. Internal `fly`/`flies` storage fields remain compatible with previously saved scores.
-
-## Submission note
-
-The PDF requests a ZIP named `FroggyCrosser_NRP1_NRP2.zip` containing assets and app code. This template uses `src/app/` plus sibling components, constants, game, and state folders: preserve **all of `src/`**, `assets/`, `package.json`, `package-lock.json`, `app.json`, and `tsconfig.json` for a runnable copy. Do not submit only `src/app/` without its imports. Confirm how the lecturer wants this template structure packaged before preparing the final ZIP. No ZIP or ULS upload is performed automatically.
