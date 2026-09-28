@@ -1,9 +1,9 @@
+import { Button, Eyebrow, FadeIn, PixelPanel, PondHero, Screen, ui } from '@/components/game-ui';
 import { PixelText as Text } from '@/components/pixel-text';
-import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
-import { Button, PixelPanel, Eyebrow, FadeIn, PondHero, Screen, ui } from '@/components/game-ui';
 import { colors } from '@/constants/game-theme';
 import { usePlayer } from '@/state/player-context';
+import { useState } from 'react';
+import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
 export default function Login() {
   const { login } = usePlayer();
   const [name, setName] = useState('');
@@ -22,9 +22,33 @@ export default function Login() {
       <PondHero />
       <View style={{ gap: 8 }}><Text style={ui.heading}>Hello, hopper.</Text><Text style={ui.body}>Pick a name and make a splash. Your best crossings stay saved on this device.</Text></View>
       <View style={{ gap: 10 }}><Eyebrow>Your username</Eyebrow>
-        <PixelPanel skin="inlay" style={{ padding: 8 }}><TextInput accessibilityLabel="Username" placeholder="e.g. LilyHopper" placeholderTextColor="#8A978B" value={name} onChangeText={setName}
-          maxLength={20} autoCapitalize="none" autoCorrect={false} returnKeyType="go" onSubmitEditing={() => void submit()}
-          style={{ padding: 12, fontFamily: 'Pixel', fontSize: 22, color: colors.ink }} /></PixelPanel>
+        <PixelPanel skin="inlay" style={{ padding: 8 }}><TextInput
+          accessibilityLabel="Username"
+          placeholder="e.g. LilyHopper"
+          placeholderTextColor="#8A978B"
+          value={name}
+          onChangeText={setName}
+          maxLength={20}
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="go"
+          onSubmitEditing={() => void submit()}
+          style={{
+            padding: 12,
+            fontFamily: 'Pixel',
+            fontSize: 22,
+            color: colors.ink,
+
+            borderWidth: 0,
+            borderColor: 'transparent',
+
+            outlineWidth: 0,
+            outlineColor: 'transparent',
+            outlineStyle: 'none' as any,
+
+            boxShadow: 'none',
+          }}
+        /></PixelPanel>
         {!!error && <Text accessibilityRole="alert" style={ui.error}>{error}</Text>}
       </View>
       <Button title={busy ? 'Saving…' : 'Let’s hop in  →'} disabled={busy || !name.trim()} onPress={() => void submit()} />
