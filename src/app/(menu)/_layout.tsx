@@ -6,6 +6,7 @@ import { Image } from 'expo-image';
 import { usePlayer } from '@/state/player-context';
 import { art, PixelPanel, ui } from '@/components/game-ui';
 import { colors } from '@/constants/game-theme';
+/** Add profile details and a guarded, retryable logout action to the drawer. */
 function MenuContent(props: DrawerContentComponentProps) {
   const { username, logout } = usePlayer();
   const [error, setError] = useState('');
@@ -25,6 +26,7 @@ function MenuContent(props: DrawerContentComponentProps) {
     <Text style={[ui.eyebrow, { marginTop: 'auto', padding: 24 }]}>FROGGY CROSSER · STiMP</Text>
   </DrawerContentScrollView>;
 }
+/** Register menu routes and their shared appearance; this route group adds no URL segment. */
 export default function MenuLayout() {
   return <Drawer drawerContent={props => <MenuContent {...props} />} screenOptions={({ navigation }) => ({
     headerLeft: () => <Pressable accessibilityRole="button" accessibilityLabel="Show navigation menu" onPress={() => navigation.toggleDrawer()} style={{ width: 48, height: 48, marginLeft: 4, alignItems: 'center', justifyContent: 'center' }}><Image source={require('../../../assets/game/ui/hamburger.png')} contentFit="contain" style={{ width: 24, height: 24 }} /></Pressable>,

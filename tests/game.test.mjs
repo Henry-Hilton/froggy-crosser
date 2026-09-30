@@ -1,3 +1,4 @@
+// Test the pure rules with Node's native TypeScript support, without rendering or storage.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { advanceGame, createGame, LANES, moveFrog, objectsAt, roundFor, titleFor } from '../src/game/engine.ts';
@@ -60,6 +61,7 @@ test('timer ends exactly at 90 seconds and ignores subsequent moves', () => {
 test('all six titles match the assignment', () => {
   assert.deepEqual([0, 1, 2, 3, 4, 5, 10].map(titleFor), ['Unlucky Amphibian', 'Daring Tadpole', 'Pond Explorer', 'Agile Hopper', 'Highway Navigator', 'Apex Amphibian', 'Apex Amphibian']);
 });
+// Fixed timestamps isolate score ordering and identity behavior from the system clock.
 const entry = (username, score) => ({ username, score, crossed: score / 100, flies: 0, achievedAt: '2026-09-23T00:00:00Z' });
 test('personal bests survive lower scores, ties, and case changes', () => {
   const first = mergeScore([], entry('Lily', 300));

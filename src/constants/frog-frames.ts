@@ -1,4 +1,5 @@
 // Extracted unchanged frames from the supplied 32px frog sheet.
+// Each direction has three idle and five hop frames, indexed by FrogSprite.
 export const frogFrames = {
   down: {
     idle: [require('../../assets/game/pixel/frog-down-idle-0.png'), require('../../assets/game/pixel/frog-down-idle-1.png'), require('../../assets/game/pixel/frog-down-idle-2.png')],

@@ -9,8 +9,10 @@ export function FrogSprite({ direction = 'down', frame = 0, hopping = false, ...
   direction?: Direction; frame?: number; hopping?: boolean;
 }) {
   const frames = frogFrames[direction][hopping ? 'hop' : 'idle'];
+  // Loop the selected sequence and disable image transitions for crisp frame changes.
   return <Image {...props} source={frames[Math.max(0, frame) % frames.length]} contentFit="contain" transition={0} />;
 }
+/** Cycle the three idle frames only while the containing screen is focused. */
 export function IdleFrog(props: ImageProps) {
   const [frame, setFrame] = useState(0);
   useFocusEffect(useCallback(() => {

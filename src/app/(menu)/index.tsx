@@ -7,10 +7,13 @@ import { colors } from '@/constants/game-theme';
 import { usePlayer } from '@/state/player-context';
 import { playerKey } from '@/game/scores';
 const instructions = 'Swipe up, down, left or right to hop. Dodge cars, slow trucks and fast racing cars. Ride the moving logs across the river.\n\nReach the far bank for 100 points. Collect a gift there for 25 extra points. A collision or splash returns you to the start. Cross as many frogs as you can in 90 seconds!';
+/** Show the personal best and instructions before starting a game from the menu. */
 export default function Home() {
   const { username, scores } = usePlayer();
   const [help, setHelp] = useState(false);
+  // Match the storage identity rules so username casing never hides a personal best.
   const best = scores.find(entry => playerKey(entry.username) === playerKey(username ?? ''))?.score ?? 0;
+  // The timer starts only when the modal OK action navigates to the game.
   function play() { setHelp(true); }
   return <Screen style={{ paddingTop: 10 }}>
     <Eyebrow>WELCOME BACK, {username}</Eyebrow>

@@ -5,8 +5,10 @@ import { Button, PixelPanel, Eyebrow, FadeIn, PondHero, Screen, ui } from '@/com
 import { colors } from '@/constants/game-theme';
 import { titleFor } from '@/game/engine';
 import { usePlayer } from '@/state/player-context';
+/** Display the completed round and preserve its retry payload until saving succeeds. */
 export default function Result() {
   const { result, saving, saveError, retrySave } = usePlayer();
+  // Results are memory-only, so a direct visit or restart may have no round to display.
   if (!result) return <Redirect href="/" />;
   return <Screen>
     <Eyebrow>ROUND COMPLETE · {result.username}</Eyebrow>
@@ -18,6 +20,7 @@ export default function Result() {
       {[['FROGS', result.crossed], ['BONUS GIFTS', result.flies], ['RESETS', result.misses]].map(([label, value]) => <View key={label} style={{ alignItems: 'center', gap: 8 }}><Text style={ui.heading}>{value}</Text><Eyebrow>{label}</Eyebrow></View>)}
     </PixelPanel>
     <Text style={[ui.body, { textAlign: 'center', fontSize: 12 }]}>{result.crossed} crossings × 100 + {result.flies} gifts × 25</Text>
+    {/* Block navigation actions until saving succeeds so the pending result is not replaced. */}
     {!!saveError && <><Text style={ui.error}>{saveError}</Text><Button title="Retry saving" disabled={saving} onPress={() => void retrySave()} /></>}
     <Button title="Play Again" playIcon disabled={saving || !!saveError} onPress={() => router.replace('/game')} />
     <View style={ui.row}><View style={{ flex: 1 }}><Button title="High Scores" secondary disabled={saving || !!saveError} onPress={() => router.replace('/high-scores')} /></View><View style={{ flex: 1 }}><Button title="Main Menu" secondary disabled={saving || !!saveError} onPress={() => router.replace('/')} /></View></View>

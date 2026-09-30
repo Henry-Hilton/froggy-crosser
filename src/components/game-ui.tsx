@@ -8,6 +8,7 @@ import { PixelSurface } from '@/components/pixel-panel';
 import { IdleFrog } from '@/components/frog-sprite';
 export { PixelPanel } from '@/components/pixel-panel';
 
+/** Static local image references shared by the board, hero scene, and ranking screens. */
 export const art = {
   frog: require('../../assets/game/pixel/portrait-green.png'),
   car: require('../../assets/game/pixel/car.png'),
@@ -26,6 +27,7 @@ export const art = {
   tree2: require('../../assets/game/pixel/tree2.png'),
   medals: [require('../../assets/game/pixel/portrait-green.png'), require('../../assets/game/pixel/portrait-blue.png'), require('../../assets/game/pixel/portrait-brown.png')],
 };
+/** Accessible action button with pressed/disabled feedback and optional play artwork. */
 export function Button({ title, onPress, secondary = false, disabled = false, compact = false, playIcon = false }: {
   title: string; onPress: () => void; secondary?: boolean; disabled?: boolean; compact?: boolean; playIcon?: boolean;
 }) {
@@ -35,10 +37,13 @@ export function Button({ title, onPress, secondary = false, disabled = false, co
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }}><Text style={ui.buttonText}>{title}</Text>{playIcon && <Image source={require('../../assets/game/ui/play.png')} contentFit="contain" style={{ width: 20, height: 20 }} />}</View></>}
   </Pressable>;
 }
+/** Safe-area wrapper with scrollable, centered content and keyboard-friendly taps. */
 export function Screen({ children, style }: PropsWithChildren<{ style?: ViewStyle }>) {
   return <SafeAreaView style={ui.safe}><ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={[ui.screen, style]}>{children}</ScrollView></SafeAreaView>;
 }
+/** Small section label using the shared uppercase typography. */
 export function Eyebrow({ children }: PropsWithChildren) { return <Text style={ui.eyebrow}>{children}</Text>; }
+/** Fade and lift children on mount; stop the animation when the wrapper unmounts. */
 export function FadeIn({ children, style }: PropsWithChildren<{ style?: ViewStyle }>) {
   const [value] = useState(() => new Animated.Value(0));
   useEffect(() => {
@@ -47,6 +52,7 @@ export function FadeIn({ children, style }: PropsWithChildren<{ style?: ViewStyl
   }, [value]);
   return <Animated.View style={[style, { opacity: value, transform: [{ translateY: value.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }] }]}>{children}</Animated.View>;
 }
+/** Layer an idle frog over the hero background and clean up its looping bob on unmount. */
 export function PondHero({ small = false }: { small?: boolean }) {
   const [bob] = useState(() => new Animated.Value(0));
   useEffect(() => {
@@ -61,12 +67,14 @@ export function PondHero({ small = false }: { small?: boolean }) {
     <Animated.View style={{ transform: [{ translateY: bob }], marginBottom: 2 }}><IdleFrog style={{ width: small ? 90 : 112, height: small ? 75 : 94 }} /></Animated.View>
   </View>;
 }
+/** Display a portrait for a one-based leaderboard rank; callers supply ranks 1 through 3. */
 export function RankPortrait({ rank }: { rank: number }) {
   return <View accessibilityLabel={`Rank ${rank}`} style={{ width: 60, height: 72, alignItems: 'center', justifyContent: 'center' }}>
     <Image source={art.medals[rank - 1]} style={{ width: 60, height: 50 }} contentFit="contain" />
     <Text style={{ color: colors.ink, fontWeight: '900', fontSize: 16 }}>#{rank}</Text>
   </View>;
 }
+/** Shared layout and typography; PixelText applies its own font overrides afterward. */
 export const ui = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   screen: { flexGrow: 1, padding: 24, gap: 20, width: '100%', maxWidth: 520, alignSelf: 'center' },

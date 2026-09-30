@@ -12,9 +12,11 @@ import { advanceGame, COLUMNS, createGame, LANES, moveFrog, objectsAt, ROUND_SEC
 import { usePlayer } from '@/state/player-context';
 import { FrogSprite } from '@/components/frog-sprite';
 
+/** Connect the pure simulation to input, animation, pause controls, and round saving. */
 export default function Game() {
   const { finishRound } = usePlayer();
   const [game, setGame] = useState(createGame);
+  // The ref holds every simulation step; React state holds the less frequent visual snapshot.
   const current = useRef(createGame());
   const finish = useRef(finishRound);
   const [paused, setPaused] = useState(false);
@@ -25,8 +27,10 @@ export default function Game() {
   const [direction, setDirection] = useState<Direction>('up');
   const [hopAt, setHopAt] = useState(-1);
   const gestureUsed = useRef(false);
+  // Refresh the save callback without restarting the focus-owned frame loop.
   useEffect(() => { finish.current = finishRound; }, [finishRound]);
   const pause = useCallback((value: boolean) => { pausedRef.current = value; setPaused(value); setLeaving(false); }, []);
+  // All input methods share the same guards, engine update, and hop animation.
   const move = useCallback((nextDirection: Direction) => {
     if (pausedRef.current || current.current.finished) return;
     const next = moveFrog(current.current, nextDirection);
@@ -36,20 +40,24 @@ export default function Game() {
     scale.setValue(1.08);
     Animated.spring(scale, { toValue: 1, speed: 24, bounciness: 7, useNativeDriver: Platform.OS !== 'web' }).start();
   }, [scale]);
+  // Focus owns the frame loop and native listeners; cleanup stops them after navigation.
   useFocusEffect(useCallback(() => {
     let cancelled = false;
     let frame = 0;
     let previous = performance.now();
     let lastRender = previous;
     function tick(now: number) {
+      // Update the baseline even while paused so resume never catches up paused time.
       const delta = Math.max(0, (now - previous) / 1000); previous = now;
       if (!pausedRef.current && !current.current.finished) {
         current.current = advanceGame(current.current, delta);
+        // Finish once and stop scheduling frames; navigate only if focus was retained.
         if (current.current.finished) {
           setGame(current.current);
           void finish.current(roundFor(current.current)).then(() => { if (!cancelled) router.replace('/result'); });
           return;
         }
+        // Simulate each frame but limit routine React rendering to about 30 updates/second.
         if (now - lastRender >= 1000 / 30) { setGame(current.current); lastRender = now; }
       }
       frame = requestAnimationFrame(tick);
@@ -61,6 +69,7 @@ export default function Game() {
   }, [pause, scale]));
   useEffect(() => {
     if (Platform.OS !== 'web') return;
+    // Browser input and visibility APIs run only after the web platform guard.
     const keys: Record<string, Direction> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right' };
     const keydown = (event: KeyboardEvent) => {
       if (keys[event.key]) { event.preventDefault(); move(keys[event.key]); }
@@ -78,6 +87,7 @@ export default function Game() {
     onMoveShouldSetPanResponder: () => true,
     onPanResponderGrant: () => { gestureUsed.current = false; },
     onPanResponderMove: (_, gesture) => {
+      // Ignore touch jitter, then consume one hop along the dominant gesture axis.
       if (gestureUsed.current || Math.max(Math.abs(gesture.dx), Math.abs(gesture.dy)) < 18) return;
       gestureUsed.current = true;
       move(Math.abs(gesture.dx) > Math.abs(gesture.dy) ? gesture.dx > 0 ? 'right' : 'left' : gesture.dy > 0 ? 'down' : 'up');
@@ -85,6 +95,7 @@ export default function Game() {
     onPanResponderTerminationRequest: () => false,
     });
   }, [move]);
+  // Scale board cells to the available layout while preserving the 7:9 aspect ratio.
   const width = Math.max(140, Math.min(area.width - 24, area.height * COLUMNS / ROWS, 490));
   const cell = width / COLUMNS;
   const seconds = Math.ceil(ROUND_SECONDS - game.elapsed);
@@ -102,6 +113,7 @@ export default function Game() {
       </PixelPanel>
       <View style={styles.track}><PixelSurface skin="grey" /><View style={{ height: 16, width: `${seconds / ROUND_SECONDS * 100}%`, minWidth: seconds > 0 ? 16 : 0, overflow: 'hidden' }}><PixelSurface skin={seconds <= 15 ? 'red' : 'green'} /></View></View>
     </View>
+    {/* Layer terrain, moving objects, gift, and frog inside the measured swipe target. */}
     <View style={styles.boardArea} onLayout={event => setArea(event.nativeEvent.layout)}>
       <View testID="game-board" accessibilityLabel="Game board. Swipe in any direction to move the frog." {...responder.panHandlers}
         style={[styles.board, { width, height: cell * ROWS }]}>
@@ -124,6 +136,7 @@ export default function Game() {
         </View>
       </View>
     </View>
+    {/* Direction buttons provide an accessible alternative to swipes. */}
     <View style={styles.footer}>
       <Text accessibilityLiveRegion="polite" style={styles.notice}>{game.finished ? 'Round complete. Saving your adventure…' : game.elapsed < game.eventUntil ? game.event : game.fly ? 'Gift on the far bank · +25 bonus' : 'Swipe anywhere on the board to hop'}</Text>
       <View style={styles.controls}>
@@ -132,6 +145,7 @@ export default function Game() {
       </View>
       <Text style={styles.tip}>100 / crossing    ·    25 / gift    ·    Unlimited retries</Text>
     </View>
+    {/* Leaving takes confirmation because unfinished rounds are not saved. */}
     {paused && !game.finished && <View style={styles.overlay} accessibilityViewIsModal>
       <PixelPanel style={[ { width: '100%', maxWidth: 370, gap: 18 }]}>
         <Eyebrow>A MOMENT ON THE BANK</Eyebrow><Text style={ui.heading}>{leaving ? 'Leave this round?' : 'Catch your breath.'}</Text>
@@ -142,6 +156,7 @@ export default function Game() {
     </View>}
   </SafeAreaView>;
 }
+// Screen-specific layout; shared typography and colors come from the UI modules.
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
   header: { paddingHorizontal: 24, paddingTop: 10, paddingBottom: 12, width: '100%', maxWidth: 540, alignSelf: 'center' },

@@ -4,6 +4,7 @@ import { memo, type PropsWithChildren } from 'react';
 import { StyleSheet, View, type ViewProps } from 'react-native';
 
 // Nine separate regions keep corner pixels square on every platform and panel size.
+// Regions are row-major; eight-unit borders stay fixed while center strips stretch.
 export const PixelSurface = memo(function PixelSurface({ skin = 'panel' }: { skin?: keyof typeof uiSkins }) {
   return <View pointerEvents="none" accessible={false} style={[StyleSheet.absoluteFill, { zIndex: 0 }]}>
     {[0, 1, 2].map(row => <View key={row} style={{ flexDirection: 'row', ...(row === 1 ? { flex: 1 } : { height: 8 }) }}>
@@ -13,6 +14,7 @@ export const PixelSurface = memo(function PixelSurface({ skin = 'panel' }: { ski
   </View>;
 });
 
+/** Place content above a decorative surface. Caller styles apply to the outer container. */
 export function PixelPanel({ children, style, skin = 'panel', ...props }: PropsWithChildren<ViewProps & { skin?: keyof typeof uiSkins }>) {
   return <View {...props} style={[{ padding: 20, minHeight: 24, minWidth: 24, position: 'relative', zIndex: 1 }, style]}>
     <PixelSurface skin={skin} />

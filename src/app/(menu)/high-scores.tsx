@@ -5,8 +5,10 @@ import { View } from 'react-native';
 import { art, Button, PixelPanel, Eyebrow, FadeIn, RankPortrait, Screen, ui } from '@/components/game-ui';
 import { usePlayer } from '@/state/player-context';
 import { playerKey, rankScores } from '@/game/scores';
+/** Present the top three personal bests or an invitation to finish the first round. */
 export default function HighScores() {
   const { scores, username } = usePlayer();
+  // Truncate only the display; retain all stored players for future personal-best comparisons.
   const leaders = rankScores(scores).slice(0, 3);
   return <Screen>
     <Eyebrow>THE LOCAL LEADERBOARD</Eyebrow><Text style={ui.title}>Hall of{'\n'}Hoppers.</Text>

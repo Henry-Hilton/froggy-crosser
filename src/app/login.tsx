@@ -4,17 +4,20 @@ import { colors } from '@/constants/game-theme';
 import { usePlayer } from '@/state/player-context';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, TextInput, View } from 'react-native';
+/** Collect a local username and report save failures before the route guard opens the menu. */
 export default function Login() {
   const { login } = usePlayer();
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // Keyboard and button submission share a guard against empty names and duplicate writes.
   async function submit() {
     if (busy || !name.trim()) return;
     setBusy(true); setError('');
     try { await login(name); } catch { setError('Could not save your profile. Please try again.'); }
     finally { setBusy(false); }
   }
+  // Keep the form above the iOS keyboard; the provider also validates the trimmed name.
   return <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
     <Screen style={{ justifyContent: 'center' }}>
       <Eyebrow>A little leap. A big adventure.</Eyebrow>
